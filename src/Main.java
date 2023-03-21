@@ -3,6 +3,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Comparator.reverseOrder;
+
 /**
  * Напишите приложение, которое на входе получает через консоль текст, а в ответ выдает статистику:
  * 1. Количество слов в тексте.
@@ -26,11 +28,11 @@ public class Main {
         System.out.println("Слов в тексте " + list.size());
         System.out.println("Топ - 10");
 
-        Map<String, Integer> map = list.stream()
-                .collect(Collectors.toMap(Function.identity(), value -> 1, Integer::sum));
+        Map<String, Long> map = list.stream()
+                .collect(Collectors.groupingBy((String::toString), Collectors.counting()));
 
         map.entrySet().stream()
-                .sorted((el, el1) -> el.getValue()< el1.getValue() ? 1 :(el.getValue()> el1.getValue() ? -1 : el.getKey().compareTo(el1.getKey())))
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
                 .limit(10)
                 .forEach( element -> System.out.println( element.getValue() + " - " + element.getKey()));
 
